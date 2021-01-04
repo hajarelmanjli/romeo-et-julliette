@@ -1,0 +1,53 @@
+import matplotlib.pyplot as plt
+
+# exercice1 : ajouter une docstring complète pour chaque fonction
+
+def words_counter(texte):
+    """"
+    cette fonction prend compte en parametre le fichier texte, en premier elle transforme le tout en miniscule,
+    ensuite elle separe les mots du texte et les stockent dans une liste,puis on transforme cette liste de mots 
+    en set pour eviter les repitions,apres elle retourne un dictionnaire contenant les mots du texte comme cle et
+    les repetitions de chaque mot comme valeurs"""
+    
+    p = texte.lower().split(" ") # pour compter le nombre d'occ des mots + autres traitements
+    s = set(p) # pour obtenir les mots distincts qui composent la phrase
+    return {k:p.count(k) for k in s}
+
+def preprocess(texte):
+    """cette fonction supprime les ponctuations en les remplacant par des espaces"""
+    ponc =[',', '.', ';', '/', '!', '?', '-', '"', "'", '...', ':', "\n", '[', ']', '(', ')']
+    for c in ponc:
+        texte = texte.replace(c, " ")
+    return texte
+
+def book2hist(path='books/1513.txt', title="Romeo et Juliette", n=13):
+    """cette fonction ouvre le fichier texte,elle le lis apres elle appelle la fonction preprocess
+    pour supprimer les ponctuations ensuite elle appelle la fonction words_counter pour creer le 
+    dictionnaire qui contient les mots et leur repition,puis elle supprime l'element espace du dictionnaire,
+    ensuite elle met en ordre decroissant les elements du dictionnaire a travers leurs valeurs, enfin elle affiche
+    l'histogramme"""
+    f = open(path)
+    book = f.read()
+    book = preprocess(book)
+    book = words_counter(book)
+    if '' in book:
+        book.pop('')
+    v_n = sorted(book.values(), reverse=True)[:n]
+    m_n = {k:book[k] for k in book if book[k] in v_n}
+    m_nbis = {}
+    for v in sorted(m_n.values(), reverse=True):
+        for k in m_n:
+            if m_n[k]==v:
+                if k not in m_nbis:
+                    m_nbis[k] = v
+    plt.bar(m_nbis.keys(), m_nbis.values(), color='g')
+    plt.title(title)
+    plt.show()
+    
+    
+    
+    
+    # télécharger les .txt et les placer dans books, puis executer !
+book2hist()
+book2hist(path='books/460.txt', title='A Christmas Carol', n=10)
+book2hist('books/110.txt', "Alice's Adventures in Wonderland", n=5)
